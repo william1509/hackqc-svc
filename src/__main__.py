@@ -3,7 +3,7 @@ import traceback
 from flask import Flask, jsonify, make_response, request
 import sqlalchemy
 from werkzeug.utils import secure_filename
-from database import init_db, conn, users, plants
+from database import UserPlants, init_db, conn, users, plants
 from os import environ
 
 from plant_client import PlantClient
@@ -43,14 +43,18 @@ def identify():
 
     # file.save(local_file_path)
     suggestion = plant_client.identify("images/user/plant.png")
+    conn.execute(UserPlants.insert(), {
+        "name": username
+    })
 
-    return "ok"
+    return jsonify(suggestion)
 
 @app.route("/plants", methods=["GET"])
 def get_plants():
-    print(plants.columns.keys())
-    result = conn.execute(plants.select().where(plants.c.img_path == "Solidago canadensis")).fetchall()
-    return result
+    result = conn.execute(plants.select().where(plants.c.name == "Solidago canadensis")).fetchall()
+    print(result)
+    results = [tuple(row) for row in result]
+    return jsonify(results)
 
 
 @app.teardown_appcontext
