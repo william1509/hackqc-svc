@@ -21,7 +21,7 @@ plant_client = PlantClient(app.config['PLANT_ID_API_KEY'])
 
 @app.route("/signup", methods=["GET"])
 def signup():
-    username = request.args.get('username')
+    username = request.args.get('user')
     conn.execute(users.insert(), {
         "name": username
     })
@@ -45,28 +45,39 @@ def authenticate():
     
 @app.route("/identify", methods=["POST"])
 def identify():
-    user_id = request.args.get('user_id')
+    user = request.form.get("user")
+    loc_x = request.form.get("loc_x")
+    loc_y = request.form.get("loc_y")
     file = request.files['file']
     local_file_path = f"{app.config['UPLOAD_FOLDER']}/{secure_filename(file.filename)}"
 
-    # file.save(local_file_path)
-    suggestion = plant_client.identify("images/user/plant.png")
-    row = conn.execute(select(plants.c.id, plants.c.name).where(plants.c.name == suggestion.name)).fetchone()
+    file.save(local_file_path)
+    suggestion = plant_client.identify(local_file_path)
+    row = conn.execute(select(plants.c.name).where(plants.c.name == suggestion.name)).fetchone()
+    print(suggestion)
     cursor = conn.execute(user_plants.insert(), {
-        "user_id": user_id,
-        "plant_id": row[0],
-        "img_path": f"{app.config['UPLOAD_FOLDER']}/{local_file_path}"
+        "user": user,
+        "plant": row[0],
+        "img_path": f"{app.config['UPLOAD_FOLDER']}/{local_file_path}",
+        "loc_x": loc_x,
+        "loc_y": loc_y
     })
     conn.commit()
 
-    rows = conn.execute(plants.select().where(user_plants.c.id == row[0])).fetchone()
+    rows = conn.execute(user_plants.select().where(user_plants.c.user == user).where(user_plants.c.plant == row[0])).fetchone()
 
     return jsonify(rows._asdict())
 
-@app.route("/plants", methods=["GET"])
+@app.route("/userplants", methods=["GET"])
 def get_plants_for_user():
-    user_id = request.args.get('user_id')
-    cursor = conn.execute(user_plants.select().where(user_plants.c.user_id == user_id)).fetchall()
+    user = request.args.get('user')
+    plant = request.args.get('plant')
+    stm = user_plants.select()
+    if user:
+        stm = stm.where(user_plants.c.user == user)
+    if plant:
+        stm = stm.where(user_plants.c.plant == plant)
+    cursor = conn.execute(stm).fetchall()
     response = [row._asdict() for row in cursor]
 
     return jsonify(response)

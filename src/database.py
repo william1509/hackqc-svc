@@ -1,6 +1,6 @@
 import csv
 from dataclasses import dataclass
-from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, Table, create_engine, func, select
+from sqlalchemy import REAL, Boolean, Column, ForeignKey, Integer, MetaData, String, Table, create_engine, func, select
 from sqlalchemy.orm import scoped_session, sessionmaker, DeclarativeBase, Mapped, mapped_column
 
 
@@ -10,8 +10,7 @@ class Base(DeclarativeBase):
 @dataclass
 class User(Base):
     __tablename__ = 'users'
-    id: Mapped[int] = Column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String(50), unique=True)
+    name: Mapped[String] = Column(String(50), primary_key=True)
 
     def __repr__(self):
         return f'<User {self.name!r}>'
@@ -19,9 +18,9 @@ class User(Base):
 @dataclass
 class Plants(Base):
     __tablename__ = 'plants'
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String, unique=True)
-    img_path: Mapped[str] = mapped_column(String(120), unique=True)
+    name: Mapped[String] = Column(String, primary_key=True)
+    img_path: Mapped[String] = Column(String(120), unique=True)
+    is_invasive: Mapped[Boolean] = Column(Boolean)
 
     def __repr__(self):
         return f'<Plant {self.name!r}>'
@@ -29,10 +28,12 @@ class Plants(Base):
 @dataclass
 class UserPlants(Base):
     __tablename__ = 'user_plants'
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = Column(ForeignKey("users.id"))
-    plant_id: Mapped[int] = Column(ForeignKey("plants.id"))
-    img_path: Mapped[str] = mapped_column(String(120))
+    id: Mapped[Integer] = Column(Integer, primary_key=True)
+    user: Mapped[Integer] = Column(ForeignKey("users.name"))
+    plant: Mapped[Integer] = Column(ForeignKey("plants.name"))
+    img_path: Mapped[String] = Column(String(120))
+    loc_x: Mapped[REAL] = Column(REAL)
+    loc_y: Mapped[REAL] = Column(REAL)
 
     def __repr__(self):
         return f'<User {self.id}, Plant {self.img_path!r}>'
@@ -69,7 +70,8 @@ def load_initial_data(initial_data_path: str):
             # Assuming the CSV columns match the table columns
             conn.execute(plants.insert().values(
                 name=row['name'],
-                img_path=row['img_path']
+                img_path=row['img_path'],
+                is_invasive=row['is_invasive'] == 'True'
             ))
         conn.commit()
 

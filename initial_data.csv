@@ -1,2 +1,19 @@
-name,img_path
-Solidago canadensis,images\reference\solidago_canadensis.png
+name,img_path,is_invasive
+Alliaria petiolata,images\reference\alliaire_officinale.png,True
+Heracleum sphondylium,images\reference\heracleum_sphondylium.png,True
+Heracleum mantegazzianum,images\reference\heracleum_mantegazzianum.png,True
+Trapa natans,images\reference\trapa_natans.png,True
+Vincetoxicum nigrum,images\reference\vincetoxicum_nigrum.png,True
+Vincetoxicum rossicum,images\reference\vincetoxicum_rossicum.png,True
+Acer platanoides,images\reference\acer_platanoides.png,True
+Hydrocharis morsus-ranae,images\reference\hydrocharis_morsus-ranae.png,True
+Impatiens glandulifera,images\reference\impatiens_glandulifera.png,True
+Myriophyllum spicatum,images\reference\myriophyllum_spicatum.png,True
+Frangula alnus,images\reference\frangula_alnus.png,True
+Rhamnus cathartica,images\reference\rhamnus_cathartica.png,True
+Potamogeton crispus,images\reference\potamogeton_crispus.png,True
+Reynoutria ×bohemica,images\reference\reynoutria_bohemica.png,True
+Reynoutria sachalinensis,images\reference\reynoutria_sachalinensis.png,True
+Reynoutria japonica,images\reference\reynoutria_japonica.png,True
+Phragmites australis subsp. australis,images\reference\phragmites_australis_subsp_australis.png,True
+Stratiotes aloides,images\reference\stratiotes_aloides.png,True
