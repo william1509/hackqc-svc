@@ -161,3 +161,5 @@ cython_debug/
 
 *.db
 *.db-journal
+
+images/user/
