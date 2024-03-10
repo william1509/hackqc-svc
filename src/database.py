@@ -32,7 +32,7 @@ class UserPlants(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = Column(ForeignKey("users.id"))
     plant_id: Mapped[int] = Column(ForeignKey("plants.id"))
-    img_path: Mapped[str] = mapped_column(String(120), unique=True)
+    img_path: Mapped[str] = mapped_column(String(120))
 
     def __repr__(self):
         return f'<User {self.id}, Plant {self.img_path!r}>'
@@ -56,7 +56,6 @@ def init_db(initial_data_path: str):
     Base.metadata.create_all(engine)
     Base.metadata.clear()
     Base.metadata.reflect(bind=engine)
-    print(plants.c.keys())
     load_initial_data(initial_data_path)
 
 def load_initial_data(initial_data_path: str):
