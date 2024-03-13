@@ -1,5 +1,6 @@
 import json
 import traceback
+from dotenv import load_dotenv
 from flask import Flask, jsonify, make_response, request
 import sqlalchemy
 from werkzeug.utils import secure_filename
@@ -9,10 +10,13 @@ from os import environ
 
 from sqlalchemy import select
 
-from exception import AuthError, AuthenticationError, SignUpError
+from exception import APIError
 from plant_client import PlantClient
 
 app = Flask(__name__)
+
+load_dotenv(override=True)
+
 app.config['PLANT_ID_API_KEY'] = environ.get('PLANT_ID_API_KEY')
 app.config['UPLOAD_FOLDER'] = environ.get('UPLOAD_FOLDER')
 app.config['ALLOWED_EXTENSIONS'] = environ.get('ALLOWED_EXTENSIONS')
@@ -35,7 +39,7 @@ def signup():
 
     rows = conn.execute(users.select().where(users.c.name == username)).fetchone()
     if rows is None:
-        raise AuthenticationError()
+        raise APIError(400, "User doesn't exist")
     
     return jsonify(rows._asdict())
 
@@ -45,7 +49,7 @@ def authenticate():
     rows = conn.execute(users.select().where(users.c.name == username)).fetchone()
 
     if rows is None:
-        raise AuthenticationError()
+        raise APIError(400, "User doesn't exist")
     
     return jsonify(rows._asdict())
     
@@ -98,7 +102,11 @@ def get_all_plants():
 @app.route("/ask", methods=["POST"])
 def ask():
     plant = request.args.get('plant')
+    if plant is None:
+        raise APIError(400, "No plant code provided")
     prompt = request.form.get("prompt")
+    if prompt is None:
+        raise APIError(400, "No prompt provided")
     response = cohere.ask(plant, prompt)
     return jsonify(response)
 
@@ -110,7 +118,7 @@ def shutdown_session(exception=None):
 """
 Error handling
 """
-@app.errorhandler(AuthError)
+@app.errorhandler(APIError)
 def handle_exception(err):
     """Return JSON instead of HTML for MyCustomError errors."""
     response = {
@@ -120,25 +128,6 @@ def handle_exception(err):
         response["message"] = err.args[0]
     return jsonify(response), err.code
 
-@app.errorhandler(SignUpError)
-def handle_exception(err):
-    """Return JSON instead of HTML for MyCustomError errors."""
-    response = {
-      "error": err.description, 
-    }
-    if len(err.args) > 0:
-        response["message"] = err.args[0]
-    return jsonify(response), err.code
-
-@app.errorhandler(AuthenticationError)
-def handle_exception(err):
-    """Return JSON instead of HTML for MyCustomError errors."""
-    response = {
-      "error": err.description, 
-    }
-    if len(err.args) > 0:
-        response["message"] = err.args[0]
-    return jsonify(response), err.code
 
 @app.errorhandler(sqlalchemy.exc.SQLAlchemyError)
 def handle_exception(err):

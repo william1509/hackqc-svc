@@ -1,11 +1,5 @@
-class AuthError(Exception):
-  code = 403
-  description = "Authentication Error"
-
-class SignUpError(Exception):
-  code = 400
-  description = "User with this username already exists"
-
-class AuthenticationError(Exception):
-  code = 400
-  description = "User doesn't exist"
+class APIError(Exception):
+  def __init__(self, code, description):
+    self.code = code
+    self.description = description
+    super().__init__(self.description)

@@ -19,7 +19,7 @@ class User(Base):
 class Plants(Base):
     __tablename__ = 'plants'
     name: Mapped[String] = Column(String, primary_key=True)
-    img_path: Mapped[String] = Column(String(120), unique=True)
+    img_path: Mapped[String] = Column(String(120))
     code: Mapped[String] = Column(String(20), unique=True)
     is_invasive: Mapped[Boolean] = Column(Boolean)
 
@@ -70,7 +70,7 @@ def load_initial_data(initial_data_path: str):
         for row in csv_reader:
             # Assuming the CSV columns match the table columns
             conn.execute(plants.insert().values(
-                name=row['name'],
+                name=row['Nom_latin'],
                 img_path=row['img_path'],
                 is_invasive=row['is_invasive'] == 'True',
                 code=row['Code_espece']
