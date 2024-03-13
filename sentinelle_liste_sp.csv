@@ -1,0 +1,73 @@
+Regne,Categorie,Code_espece,Nom_francais,Nom_latin,Nom_anglais,img_path,is_invasive
+,,zzz,Espèce non répertoriée,,Unlisted species,,True
+Faune,Insectes,COCCA,Coccinelle asiatique,"Harmonia axyridis",Asian ladybeetle,,True
+Faune,Insectes,LONGI,Longicorne étoilé,"Anoplophora glabripennis",Asian long-horned beetle,,True
+Faune,Insectes,SCARJ,Scarabée japonais,"Popillia japonica",Japanese beetle,,True
+Faune,Mollusques et crustacés,CLADE,Cladocère épineux,"Bythotrephes longimanus",Spiny water flea,,True
+Faune,Mollusques et crustacés,CCAM,Crabe chinois à mitaines,"Eriocheir sinensis",Chinese mitten crab,,True
+Faune,Mollusques et crustacés,CRERS,Crevette rouge sang,"Hemimysis anomala",Bloody red shrimp,,True
+Faune,Mollusques et crustacés,ECREV,Écrevisse à taches rouges,"Orconectes rusticus",Rusty crayfish,,True
+Faune,Mollusques et crustacés,MOULQ,Moule quagga,"Dreissena bugensis",Quagga mussel,,True
+Faune,Mollusques et crustacés,MOULE,Moule zébrée,"Dreissena polymorpha",Zebra mussels,,True
+Faune,Mollusques et crustacés,NASNZ,Nasse de la Nouvelle-Zélande,"Potamopyrgus antipodarum",New Zealand mud snail,,True
+Faune,Mollusques et crustacés,PCORA,Petite corbeille d’Asie,"Corbicula fluminea",Asiatic clam,,True
+Faune,Mollusques et crustacés,PCRED,Petite crevette d’eau douce,"Echinogammarus ischnus",Freshwater shrimp,,True
+Faune,Mollusques et crustacés,VIVIC,Vivipare chinoise,"Bellamya chinensis",Chinese mystery snail,,True
+Faune,Oiseaux et mammifères,CERFR,Cerf rouge,"Cervus elaphus",Red deer,,True
+Faune,Oiseaux et mammifères,CYGNE,Cygne tuberculé,"Cygnus olor",Mute swan,,True
+Faune,Reptiles et poissons,CARPE,Carpe de roseau,"Ctenopharyngodon idella",Grass carp,,True
+Faune,Reptiles et poissons,CRAPV,Crapet vert,"Lepomis cyanellus",Green sunfish,,True
+Faune,Reptiles et poissons,FGARD,Faux gardon,"Pseudorasbora parva",Stone moroko,,True
+Faune,Reptiles et poissons,GARDR,Gardon rouge,"Scardinius erythrophthalmus",Common rudd,,True
+Faune,Reptiles et poissons,GOBIE,Gobie à taches noires,"Neogobius melanostomus",Round goby,,True
+Faune,Reptiles et poissons,CARA,Poisson rouge,"Carassius auratus",Goldfish,,True
+Faune,Reptiles et poissons,TANCH,Tanche,"Tinca tinca",Tench,,True
+Faune,Reptiles et poissons,TETES,Tête-de-serpent,"Channa sp., Parachanna sp.",Snakehead,,True
+Faune,Reptiles et poissons,TORTU,Tortue à oreilles rouges,"Trachemys scripta elegans",Red-eared slider,,True
+Flore,Plantes aquatiques flottantes,CHATA,Châtaigne d'eau,"Trapa natans",Water chestnut,images\reference\trapa_natans.png,True
+Flore,Plantes aquatiques flottantes,FAUXN,Faux-nymphéa pelté,"Nymphoides peltata",Yellow floatingheart,,True
+Flore,Plantes aquatiques flottantes,HYDRO,Hydrocharide grenouillette,"Hydrocharis morsus-ranae",European frog-bit,images\reference\hydrocharis_morsus-ranae.png,True
+Flore,Plantes aquatiques flottantes,JACYN,Jacinthe d'eau,"Eichhornia crassipes",Water hyacinth,,True
+Flore,Plantes aquatiques flottantes,LAITU,Laitue d'eau,"Pistia stratiotes",Water lettuce,,TruHeracleum mantegazzianume
+Flore,Plantes aquatiques flottantes,SALVI,Salvinia,"Salvinia spp.",Water moss,,True
+Flore,Plantes aquatiques submergées,CABOM,Cabomba de Caroline,"Cabomba caroliniana",Fanwort,,True
+Flore,Plantes aquatiques submergées,ELODE,Élodée dense,"Egeria densa",Brazilian waterweed,,True
+Flore,Plantes aquatiques submergées,HYDRI,Hydrille verticillé,"Hydrilla verticillata",Hydrilla,,True
+Flore,Plantes aquatiques submergées,MYREP,Myriophylle à épis,"Myriophyllum spicatum",Eurasian water-milfoil,images\reference\myriophyllum_spicatum.png,True
+Flore,Plantes aquatiques submergées,MYRAQ,Myriophylle aquatique,"Myriophyllum aquaticum",Parrot feather,,True
+Flore,Plantes aquatiques submergées,NITET,Nitelle étoilée,"Nitellopsis obtusa",Starry stonewort,,True
+Flore,Plantes aquatiques submergées,PETNA,Petite naïade,"Najas minor",Brittle-leaved naid,,True
+Flore,Plantes aquatiques submergées,POTAM,Potamot crépu,"Potamogeton crispus",Curly-leaved pondweed,images\reference\potamogeton_crispus.png,True
+Flore,Plantes de milieux terrestres,ALLIA,Alliaire officinale,"Alliaria petiolata",Garlic mustard,images\reference\alliaire_officinale.png,True
+Flore,Plantes de milieux terrestres,ANTHR,Anthrisque des bois,"Anthriscus sylvestris",Wild chervil,,True
+Flore,Plantes de milieux terrestres,BECO,Berce commune,"Heracleum sphondylium",Meadow cow-parsnip,images\reference\heracleum_sphondylium.png,True
+Flore,Plantes de milieux terrestres,BERCE,Berce du Caucase,"Heracleum mantegazzianum",Giant hogweed,images\reference\heracleum_mantegazzianum.png,True
+Flore,Plantes de milieux terrestres,CONSO,Consoude officinale,"Symphytum officinale",Common comfrey,,True
+Flore,Plantes de milieux terrestres,DOMPR,Dompte-venin de Russie,"Vincetoxicum rossicum",European swallowwort,images\reference\vincetoxicum_rossicum.png,True
+Flore,Plantes de milieux terrestres,DOMPN,Dompte-venin noir,"Vincetoxicum nigrum",Black swallowwort,images\reference\vincetoxicum_nigrum.png,True
+Flore,Plantes de milieux terrestres,EGOPO,Égopode podagraire,"Aegopodium podagraria",Goutweed,,True
+Flore,Plantes de milieux terrestres,ACENU,Érable à Giguère,"Acer negundo",Manitoba Maple,,True
+Flore,Plantes de milieux terrestres,ERANO,Érable de Norvège,"Acer platanoides",Norway maple,images\reference\acer_platanoides.png,True
+Flore,Plantes de milieux terrestres,GAILL,Gaillet mollugine,"Galium mollugo",Smooth bedstraw,,True
+Flore,Plantes de milieux terrestres,IMPAT,Impatiente glanduleuse,"Impatiens glandulifera",Himalayan balsam,images\reference\impatiens_glandulifera.png,True
+Flore,Plantes de milieux terrestres,LYSIM,Lysimaque nummulaire,"Lysimachia nummularia",Creeping yellow loosestrife,,True
+Flore,Plantes de milieux terrestres,MISCA,Miscanthus commun,"Miscanthus sacchariflorus",Amur silvergrass,,True
+Flore,Plantes de milieux terrestres,NERPB,Nerprun bourdaine,"Frangula alnus",Glossy buckthorn,images\reference\frangula_alnus.png,True
+Flore,Plantes de milieux terrestres,NERPC,Nerprun cathartique,"Rhamnus cathartica",European buckthorn,images\reference\rhamnus_cathartica.png,True
+Flore,Plantes de milieux terrestres,ULMU,Orme de Sibérie,"Ulmus pumila",Siberian elm,,True
+Flore,Plantes de milieux terrestres,PANAI,Panais sauvage,"Pastinaca sativa",Wild parsnip,,True
+Flore,Plantes de milieux terrestres,PETAJ,Pétasite du Japon,"Petasites japonicus",Japanese sweet coltsfoot,,True
+Flore,Plantes de milieux terrestres,RENFI,Renoncule ficaire,"Ficaria verna,Lesser celandine", fig buttercup,,True
+Flore,Plantes de milieux terrestres,RENOB,Renouée de Bohème,"Reynoutria ×bohemica",Bohemian knotweed,images\reference\reynoutria_bohemica.png,True
+Flore,Plantes de milieux terrestres,RENOS,Renouée de Sakhaline,"Reynoutria sachalinensis",Giant knotweed,images\reference\reynoutria_sachalinensis.png,True
+Flore,Plantes de milieux terrestres,RENOJ,Renouée du Japon,"Reynoutria japonica var. japonica",Japanese knotweed,images\reference\reynoutria_japonica.png,True
+Flore,Plantes de milieux terrestres,TOPI,Topinambour,"Helianthus tuberosus",Jerusalem artichoke,,True
+Flore,Plantes de milieux terrestres,VALO,Valériane officinale,"Valeriana officinalis",Common valerian,,True
+Flore,Plantes émergentes,ALPIS,Alpiste roseau,"Phalaris arundinacea",Reed canary grass,,True
+Flore,Plantes émergentes,BUTOM,Butome à ombelle,"Butomus umbellatus",Flowering-rush,,True
+Flore,Plantes émergentes,GLYCE,Glycérie aquatique,"Glyceria maxima",Rough mannagrass,,True
+Flore,Plantes émergentes,IRISF,Iris faux-acore,"Iris pseudacorus",Yellow iris,,True
+Flore,Plantes émergentes,RORIP,Rorippe amphibie,"Rorippa amphibia",Amphibious yellowcress,,True
+Flore,Plantes émergentes,ROSEA,Roseau commun,"Phragmites australis subsp. australis",Common reed,images\reference\phragmites_australis_subsp_australis.png,True
+Flore,Plantes émergentes,SALIC,Salicaire commune,"Lythrum salicaria",Purple loosestrife,,True
+Flore,Plantes émergentes,ALOES,Stratiote faux-aloès,"Stratiotes aloides",Water soldier,images\reference\stratiotes_aloides.png,True

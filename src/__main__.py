@@ -3,6 +3,7 @@ import traceback
 from flask import Flask, jsonify, make_response, request
 import sqlalchemy
 from werkzeug.utils import secure_filename
+from cohere_client import CohereClient
 from database import init_db, conn, users, plants, user_plants
 from os import environ
 
@@ -16,8 +17,13 @@ app.config['PLANT_ID_API_KEY'] = environ.get('PLANT_ID_API_KEY')
 app.config['UPLOAD_FOLDER'] = environ.get('UPLOAD_FOLDER')
 app.config['ALLOWED_EXTENSIONS'] = environ.get('ALLOWED_EXTENSIONS')
 app.config['INITIAL_DATA'] = environ.get('INITIAL_DATA')
+app.config['COHERE_API_KEY'] = environ.get('COHERE_API_KEY')
 plant_client = PlantClient(app.config['PLANT_ID_API_KEY'])
 
+cohere = CohereClient(app.config['COHERE_API_KEY'])
+
+#cohere_ef  = embedding_functions.CohereEmbeddingFunction(api_key="YOUR_API_KEY",  model_name="large")
+#cohere_ef(texts=["document1","document2"])
 
 @app.route("/signup", methods=["GET"])
 def signup():
@@ -46,8 +52,8 @@ def authenticate():
 @app.route("/identify", methods=["POST"])
 def identify():
     user = request.form.get("user")
-    loc_x = request.form.get("loc_x")
-    loc_y = request.form.get("loc_y")
+    long = request.form.get("long")
+    lat = request.form.get("lat")
     file = request.files['file']
     local_file_path = f"{app.config['UPLOAD_FOLDER']}/{secure_filename(file.filename)}"
 
@@ -59,8 +65,8 @@ def identify():
         "user": user,
         "plant": row[0],
         "img_path": f"{app.config['UPLOAD_FOLDER']}/{local_file_path}",
-        "loc_x": loc_x,
-        "loc_y": loc_y
+        "long": long,
+        "lat": lat
     })
     conn.commit()
 
@@ -89,6 +95,12 @@ def get_all_plants():
 
     return jsonify(response)
 
+@app.route("/ask", methods=["POST"])
+def ask():
+    plant = request.args.get('plant')
+    prompt = request.form.get("prompt")
+    response = cohere.ask(plant, prompt)
+    return jsonify(response)
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
