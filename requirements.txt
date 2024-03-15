@@ -6,3 +6,4 @@ requests==2.31.0
 langchain-community==0.0.28
 pandas==2.2.1
 tqdm==4.66.2
+kindwise-api-client==0.3.1
