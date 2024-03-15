@@ -1,13 +1,13 @@
 import json
 import traceback
 from dotenv import load_dotenv
-from flask import Flask, jsonify, make_response, request
+from flask import Flask, jsonify, make_response, request, send_file
 import sqlalchemy
 from werkzeug.utils import secure_filename
 from cohere_client import CohereClient
 from database import init_db, conn, users, plants, user_plants
 from os import environ
-
+from pathlib import Path
 from sqlalchemy import select
 
 from exception import APIError
@@ -24,10 +24,15 @@ app.config['INITIAL_DATA'] = environ.get('INITIAL_DATA')
 app.config['COHERE_API_KEY'] = environ.get('COHERE_API_KEY')
 plant_client = PlantClient(app.config['PLANT_ID_API_KEY'])
 
-cohere = CohereClient(app.config['COHERE_API_KEY'])
+# cohere = CohereClient(app.config['COHERE_API_KEY'])
 
 #cohere_ef  = embedding_functions.CohereEmbeddingFunction(api_key="YOUR_API_KEY",  model_name="large")
 #cohere_ef(texts=["document1","document2"])
+
+@app.route("/reference/<img>", methods=["GET"])
+def reference(img: str):
+    p = Path(f"../images/reference/{img}")
+    return send_file(p, mimetype='image/jpg')
 
 @app.route("/signup", methods=["GET"])
 def signup():
@@ -64,7 +69,6 @@ def identify():
     file.save(local_file_path)
     suggestion = plant_client.identify(local_file_path)
     row = conn.execute(select(plants.c.name).where(plants.c.name == suggestion.name)).fetchone()
-    print(suggestion)
     cursor = conn.execute(user_plants.insert(), {
         "user": user,
         "plant": row[0],
@@ -152,4 +156,4 @@ def handle_exception(err):
 if __name__ == '__main__':
     init_db(app.config['INITIAL_DATA'])
     
-    app.run('0.0.0.0')
+    app.run('0.0.0.0', threaded=True)
