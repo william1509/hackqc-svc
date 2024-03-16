@@ -1,6 +1,6 @@
 import csv
 from dataclasses import dataclass
-from sqlalchemy import REAL, Boolean, Column, ForeignKey, Integer, MetaData, String, Table, create_engine, func, select
+from sqlalchemy import REAL, Boolean, Column, Double, ForeignKey, Integer, MetaData, String, Table, create_engine, func, select
 from sqlalchemy.orm import scoped_session, sessionmaker, DeclarativeBase, Mapped, mapped_column
 
 
@@ -11,6 +11,7 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = 'users'
     name: Mapped[String] = Column(String(50), primary_key=True)
+    xp: Mapped[Integer] = Column(Integer, default=0)
 
     def __repr__(self):
         return f'<User {self.name!r}>'
@@ -33,8 +34,8 @@ class UserPlants(Base):
     user: Mapped[Integer] = Column(ForeignKey("users.name"))
     plant: Mapped[Integer] = Column(ForeignKey("plants.name"))
     img_path: Mapped[String] = Column(String(120))
-    long: Mapped[REAL] = Column(REAL)
-    lat: Mapped[REAL] = Column(REAL)
+    long: Mapped[Double] = Column(Double)
+    lat: Mapped[Double] = Column(Double)
 
     def __repr__(self):
         return f'<User {self.id}, Plant {self.img_path!r}>'

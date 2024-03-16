@@ -1,5 +1,7 @@
+import base64
 import json
 import traceback
+import uuid
 from dotenv import load_dotenv
 from flask import Flask, jsonify, make_response, request, send_file
 import sqlalchemy
@@ -24,10 +26,7 @@ app.config['INITIAL_DATA'] = environ.get('INITIAL_DATA')
 app.config['COHERE_API_KEY'] = environ.get('COHERE_API_KEY')
 plant_client = PlantClient(app.config['PLANT_ID_API_KEY'])
 
-# cohere = CohereClient(app.config['COHERE_API_KEY'])
-
-#cohere_ef  = embedding_functions.CohereEmbeddingFunction(api_key="YOUR_API_KEY",  model_name="large")
-#cohere_ef(texts=["document1","document2"])
+cohere = CohereClient(app.config['COHERE_API_KEY'])
 
 @app.route("/reference/<img>", methods=["GET"])
 def reference(img: str):
@@ -44,17 +43,16 @@ def signup():
 
     rows = conn.execute(users.select().where(users.c.name == username)).fetchone()
     if rows is None:
-        raise APIError(400, "User doesn't exist")
+        raise APIError(403, "User doesn't exist")
     
     return jsonify(rows._asdict())
 
 @app.route("/authenticate", methods=["GET"])
 def authenticate():
-    username = request.args.get('username')
-    rows = conn.execute(users.select().where(users.c.name == username)).fetchone()
-
+    user = request.args.get('user')
+    rows = conn.execute(users.select().where(users.c.name == user)).fetchone()
     if rows is None:
-        raise APIError(400, "User doesn't exist")
+        raise APIError(403, "User doesn't exist")
     
     return jsonify(rows._asdict())
     
@@ -63,12 +61,17 @@ def identify():
     user = request.form.get("user")
     long = request.form.get("long")
     lat = request.form.get("lat")
-    file = request.files['file']
-    local_file_path = f"{app.config['UPLOAD_FOLDER']}/{secure_filename(file.filename)}"
+    file = request.form.get("file")
+    local_file_path = f"{app.config['UPLOAD_FOLDER']}/{uuid.uuid1()}"
 
-    file.save(local_file_path)
+    with open(local_file_path, "wb") as fh:
+        fh.write(base64.decodebytes(str.encode(file)))
+
     suggestion = plant_client.identify(local_file_path)
     row = conn.execute(select(plants.c.name).where(plants.c.name == suggestion.name)).fetchone()
+    print(row)
+    if (row[0] is None):
+        raise APIError(400, "No plant detected")
     cursor = conn.execute(user_plants.insert(), {
         "user": user,
         "plant": row[0],
