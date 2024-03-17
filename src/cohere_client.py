@@ -7,7 +7,7 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 class CohereClient:
     def __init__(self, api_key: str) -> None:
         self.api_key = api_key
-        self.df=pd.read_csv("sentinelle_liste_sp.csv")
+        self.df=pd.read_csv("sentinelle_liste_sp_final.csv")
         self.df = self.df.drop(0)
         self.df = self.df[self.df["Regne"]=="Flore"].reset_index(drop=True)
         for index, row in tqdm(self.df.iterrows(), total=len(self.df)):
@@ -18,25 +18,31 @@ class CohereClient:
                 
         self.cohere_chat_model = ChatCohere(cohere_api_key=self.api_key,model="command-r")
         self.sys_prompt = (
-            "You are an expert Q&A system that is an expert in plants invasive species in Quebec.\n"
-            "Always answer the query using the provided context information, "
-            "and not prior knowledge.\n"
+            "You are an expert Q&A system that is an expert in plants invasive species in Quebec. You will be impersonating a given plant to respond to the user.\n"
+            "Always answer the query using the provided context information, and not prior knowledge.\n"
             "Some rules to follow:\n"
             "1. Never directly reference the given context in your answer.\n"
             "2. Avoid statements like 'Based on the context, ...' or "
             "'The context information ...' or anything along "
             "those lines.\n"
             "3. If the user Query is in French, then respond in french. If it was in english then respond in english.\n"
-            "4. If the question can not be answered from the context then simply say something in the lines of 'I am not aware, but how can I help you?'\n"
-            "5. Keep your responses short, around 30 words maximum\n"
+            "4. If the question can not be answered from the context then simply say something in the lines of 'I am not aware, but how can I help you?\n"
+            "5. Keep your responses short\n"
             "6. DO NOT ANSWER ANY QUESTIONS ABOUT IF A PLANT IS EDIBLE OR NOT\n"
-            "7. Answer as if you were the plant, so instead of talking about the plant in third person, say 'I am ...'\n"
+            "Personality and how to speak rules:\n"
+            "1- You will be given cartoonish personality traits, please impersonate those personality features as much as possible without deviating from the context information.\n"
+            "2- Never use the trait examples as a source of knowlede, the traits and the example are for you to learn how to speak like the plant. For the source of information you must use only the context information."
         )
 
         self.user_prompt=(
             "Context information is below.\n"
             "---------------------\n"
             "{context_str}\n"
+            "---------------------\n"
+            "Personality traits and example ways of speaking are below:\n"
+            "---------------------\n"
+            "Traits:\n{traits}\n"
+            "Example persona through text:\n{examples}\n"
             "---------------------\n"
             "Given the context information and not prior knowledge, "
             "answer the query.\n"
@@ -66,7 +72,8 @@ class CohereClient:
     def ask(self, plant_code: str, prompt: str):
         data=self.df[self.df["Code_espece"]==plant_code].reset_index(drop=True).iloc[0].to_dict()
         self.context_str = self.context_template.format(**data)
-        current_message = [HumanMessage(content=self.user_prompt.format(context_str=self.context_str,query_str=prompt))]
+        # current_message = [HumanMessage(content=self.user_prompt.format(context_str=self.context_str,query_str=prompt))]
+        current_message = [SystemMessage(content=self.sys_prompt),HumanMessage(content=self.user_prompt.format(context_str=self.context_str,query_str=prompt,traits=data["Traits"],examples=data["Examples"]))]
         response = self.cohere_chat_model(current_message).content
         return response
 
