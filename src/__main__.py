@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 import traceback
 import uuid
 from dotenv import load_dotenv
@@ -10,10 +11,13 @@ from cohere_client import CohereClient
 from database import init_db, conn, users, plants, user_plants
 from os import environ
 from pathlib import Path
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from exception import APIError
 from plant_client import PlantClient
+from suggestion import Suggestion
+
+# logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -28,14 +32,21 @@ plant_client = PlantClient(app.config['PLANT_ID_API_KEY'])
 
 cohere = CohereClient(app.config['COHERE_API_KEY'])
 
-@app.route("/reference/<img>", methods=["GET"])
-def reference(img: str):
-    p = Path(f"../images/reference/{img}")
+@app.route("/reference/<path:path>", methods=["GET"])
+def reference(path):
+    p = Path(f"../{path}")
     return send_file(p, mimetype='image/jpg')
+
+@app.route("/randomplant", methods=["GET"])
+def random_plant():
+    rows = conn.execute(plants.select().order_by(func.random())).fetchone()
+    return jsonify(rows._asdict())
 
 @app.route("/signup", methods=["GET"])
 def signup():
     username = request.args.get('user')
+    if username is None:
+        raise APIError(403, "Username not provided")
     conn.execute(users.insert(), {
         "name": username
     })
@@ -58,42 +69,51 @@ def authenticate():
     
 @app.route("/identify", methods=["POST"])
 def identify():
-    user = request.form.get("user")
-    long = request.form.get("long")
-    lat = request.form.get("lat")
-    file = request.form.get("file")
-    local_file_path = f"{app.config['UPLOAD_FOLDER']}/{uuid.uuid1()}"
+    user = request.json.get("user")
+    long = request.json.get("long")
+    lat = request.json.get("lat")
+    file = request.json.get("file")
+    local_file_path = f"{app.config['UPLOAD_FOLDER']}/{uuid.uuid1()}.jpg"
 
     with open(local_file_path, "wb") as fh:
         fh.write(base64.decodebytes(str.encode(file)))
 
-    suggestion = plant_client.identify(local_file_path)
-    row = conn.execute(select(plants.c.name).where(plants.c.name == suggestion.name)).fetchone()
-    print(row)
-    if (row[0] is None):
+    # suggestion = plant_client.identify(local_file_path)
+    suggestion = Suggestion("Frangula alnus")
+    if suggestion is None:
         raise APIError(400, "No plant detected")
+    print(f"Suggestion {suggestion}")
+    row = conn.execute(select(plants.c.name).where(plants.c.name == suggestion.name)).fetchone()
+    if row is None:
+        raise APIError(400, "Plant doesn't exist in database")
     cursor = conn.execute(user_plants.insert(), {
         "user": user,
         "plant": row[0],
-        "img_path": f"{app.config['UPLOAD_FOLDER']}/{local_file_path}",
+        "img_path": f"{local_file_path}",
         "long": long,
         "lat": lat
     })
     conn.commit()
 
-    rows = conn.execute(user_plants.select().where(user_plants.c.user == user).where(user_plants.c.plant == row[0])).fetchone()
+    rows = conn.execute(select(user_plants, plants).join_from(user_plants, plants, isouter=True).where(user_plants.c.user == user).where(user_plants.c.plant == row[0])).fetchone()
+    response = rows._asdict()
+    return jsonify(response)
 
-    return jsonify(rows._asdict())
+@app.route("/test", methods=["GET"])
+def test():
+    rows = conn.execute(select(user_plants, plants).join_from(user_plants, plants, isouter=True).where(user_plants.c.user == "marino").where(user_plants.c.plant == "Frangula alnus")).fetchone()
+    return rows._asdict()
 
 @app.route("/userplants", methods=["GET"])
 def get_plants_for_user():
     user = request.args.get('user')
     plant = request.args.get('plant')
-    stm = user_plants.select()
+    stm = select(user_plants, plants).join_from(user_plants, plants, isouter=True)
     if user:
         stm = stm.where(user_plants.c.user == user)
     if plant:
         stm = stm.where(user_plants.c.plant == plant)
+    stm = stm.distinct(user_plants.c.plant)
     cursor = conn.execute(stm).fetchall()
     response = [row._asdict() for row in cursor]
 
@@ -106,12 +126,19 @@ def get_all_plants():
 
     return jsonify(response)
 
+@app.route("/getplant", methods=["GET"])
+def get_plant():
+    plant = request.args.get('plant')
+    rows = conn.execute(plants.select().where(plants.c.plant_id == plant)).fetchone()
+
+    return jsonify(rows._asdict())
+
 @app.route("/ask", methods=["POST"])
 def ask():
-    plant = request.args.get('plant')
+    plant = request.json.get('plant')
     if plant is None:
         raise APIError(400, "No plant code provided")
-    prompt = request.form.get("prompt")
+    prompt = request.json.get("prompt")
     if prompt is None:
         raise APIError(400, "No prompt provided")
     response = cohere.ask(plant, prompt)
@@ -131,6 +158,7 @@ def handle_exception(err):
     response = {
       "error": err.description, 
     }
+    print(response)
     if len(err.args) > 0:
         response["message"] = err.args[0]
     return jsonify(response), err.code
@@ -157,6 +185,7 @@ def handle_exception(err):
     return jsonify(response), 500
 
 if __name__ == '__main__':
+    # logging.basicConfig(filename='myapp.log', level=logging.INFO)
     init_db(app.config['INITIAL_DATA'])
     
     app.run('0.0.0.0', threaded=True)

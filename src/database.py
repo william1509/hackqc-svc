@@ -31,8 +31,8 @@ class Plants(Base):
 class UserPlants(Base):
     __tablename__ = 'user_plants'
     id: Mapped[Integer] = Column(Integer, primary_key=True)
-    user: Mapped[Integer] = Column(ForeignKey("users.name"))
-    plant: Mapped[Integer] = Column(ForeignKey("plants.name"))
+    user: Mapped[String] = Column(ForeignKey("users.name"))
+    plant: Mapped[String] = Column(ForeignKey("plants.name"))
     img_path: Mapped[String] = Column(String(120))
     long: Mapped[Double] = Column(Double)
     lat: Mapped[Double] = Column(Double)
