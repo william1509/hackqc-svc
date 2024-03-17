@@ -40,7 +40,7 @@ def reference(path):
 
 @app.route("/randomplant", methods=["GET"])
 def random_plant():
-    rows = conn.execute(plants.select().order_by(func.random())).fetchone()
+    rows = conn.execute(plants.select().where(~plants.c.img_path.like('%question_mark.jpg%')).order_by(func.random())).fetchone()
     return jsonify(rows._asdict())
 
 @app.route("/signup", methods=["GET"])
