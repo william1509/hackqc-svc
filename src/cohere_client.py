@@ -28,7 +28,7 @@ class CohereClient:
             "those lines.\n"
             "3. If the user Query is in French, then respond in french. If it was in english then respond in english.\n"
             "4. If the question can not be answered from the context then simply say something in the lines of 'I am not aware, but how can I help you?'\n"
-            "5. Keep your responses short, around 50 words maximum\n"
+            "5. Keep your responses short, around 30 words maximum\n"
             "6. DO NOT ANSWER ANY QUESTIONS ABOUT IF A PLANT IS EDIBLE OR NOT\n"
             "7. Answer as if you were the plant, so instead of talking about the plant in third person, say 'I am ...'\n"
         )
@@ -43,7 +43,6 @@ class CohereClient:
             "Query: {query_str}\n"
             "Answer: "
         )
-
 
         self.context_template = """
         Regne: {Regne}

@@ -1,6 +1,7 @@
 import base64
 import json
 import logging
+import random
 import traceback
 import uuid
 from dotenv import load_dotenv
@@ -78,8 +79,8 @@ def identify():
     with open(local_file_path, "wb") as fh:
         fh.write(base64.decodebytes(str.encode(file)))
 
-    # suggestion = plant_client.identify(local_file_path)
-    suggestion = Suggestion("Frangula alnus")
+    suggestion = plant_client.identify(local_file_path)
+    # suggestion = Suggestion("Frangula alnus")
     if suggestion is None:
         raise APIError(400, "No plant detected")
     print(f"Suggestion {suggestion}")
@@ -143,6 +144,17 @@ def ask():
         raise APIError(400, "No prompt provided")
     response = cohere.ask(plant, prompt)
     return jsonify(response)
+
+@app.route("/getallmarkers", methods=["GET"])
+def get_all_markers():
+    all_markers = []
+    with open('parcs.json') as f:
+        d = json.load(f)
+        for feat in d["parc"]:
+            all_markers.append({"lat": feat[0], "long": feat[1]})
+
+    return all_markers
+        
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
